@@ -1,7 +1,7 @@
 from bottle import route, run, get, post, request
 import couchdb
 
-couch = couchdb.Server()
+couch = couchdb.Server("http://couchdb_01:5984")
 
 if 'vetoit' in couch:
     db = couch['vetoit']
