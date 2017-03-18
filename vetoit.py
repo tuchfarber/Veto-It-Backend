@@ -21,5 +21,17 @@ def retrieve(d_id):
         record = db[d_id]
         data = {"gps":record["gps"],"init_km":record["init_km"],"del_ids":record["del_ids"]}
     else:
-        data = {"error":"Document does not exist"}
+        data = {"status":"Error", "status_text": "Document does not exist"}
     return data
+
+@post('/vetoit/veto/<d_id>')
+def veto(d_id):
+    body = request.json
+    if d_id in db:
+        record = db[d_id]
+        unique_dels = set(body["del_ids"] + record["del_ids"])
+        record["del_ids"] = unique_dels
+        db[record['id']] = record
+        return {"status":"Success", "status_text": "Document successfully updated"}
+    else:
+        return {"status":"Error", "status_text": "Document does not exist"}
