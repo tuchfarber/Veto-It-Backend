@@ -17,6 +17,9 @@ def create():
 
 @get('/retrieve/<d_id>')
 def retrieve(d_id):
-    record = db[d_id]
-    data = {"gps":record["gps"],"init_km":record["init_km"],"del_ids":record["del_ids"]}
+    if d_id in db:
+        record = db[d_id]
+        data = {"gps":record["gps"],"init_km":record["init_km"],"del_ids":record["del_ids"]}
+    else:
+        data = {"error":"Document does not exist"}
     return data
