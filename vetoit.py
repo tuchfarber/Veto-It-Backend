@@ -1,4 +1,4 @@
-from bottle import route, run, get, post, request
+from bottle import route, run, get, post, request, reponse, hook
 import couchdb
 
 couch = couchdb.Server("http://couchdb_01:5984")
@@ -7,6 +7,10 @@ if 'vetoit' in couch:
     db = couch['vetoit']
 else:
     db = couch.create('vetoit')
+
+@hook('after_request')
+def enable_cors():
+    response.headers['Access-Control-Allow-Origin'] = '*'
 
 @post('/vetoit/create')
 def create():
