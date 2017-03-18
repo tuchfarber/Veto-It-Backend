@@ -1,4 +1,4 @@
-from bottle import route, run, get, post, request, response, hook
+from bottle import route, run, get, post, request
 import couchdb
 
 couch = couchdb.Server("http://couchdb_01:5984")
@@ -7,7 +7,7 @@ if 'vetoit' in couch:
     db = couch['vetoit']
 else:
     db = couch.create('vetoit')
-    
+
 @post('/vetoit/create')
 def create():
     body = request.json
