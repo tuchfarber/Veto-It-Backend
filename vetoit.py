@@ -8,14 +8,14 @@ if 'vetoit' in couch:
 else:
     db = couch.create('vetoit')
 
-@post('/create')
+@post('/vetoit/create')
 def create():
     body = request.json
     data = {"gps":body["gps"],"init_km":body["init_km"],"del_ids":body["del_ids"]}
     (d_id, d_rev) = db.save(data)
     return {"d_id":d_id}
 
-@get('/retrieve/<d_id>')
+@get('/vetoit/retrieve/<d_id>')
 def retrieve(d_id):
     if d_id in db:
         record = db[d_id]
