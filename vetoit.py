@@ -20,5 +20,3 @@ def retrieve(d_id):
     record = db[d_id]
     data = {"gps":record["gps"],"init_km":record["init_km"],"del_ids":record["del_ids"]}
     return data
-
-run(host="0.0.0.0",port="40404")
