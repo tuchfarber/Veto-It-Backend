@@ -1,4 +1,4 @@
-from bottle import route, run, get, post, request, reponse, hook
+from bottle import route, run, get, post, request, response, hook
 import couchdb
 
 couch = couchdb.Server("http://couchdb_01:5984")
