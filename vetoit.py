@@ -1,5 +1,6 @@
 from bottle import route, run, get, post, request
 import couchdb
+import uuid
 
 couch = couchdb.Server("http://couchdb_01:5984")
 
@@ -11,27 +12,34 @@ else:
 @post('/vetoit/create')
 def create():
     body = request.json
-    data = {"gps":body["gps"],"init_km":body["init_km"],"del_ids":body["del_ids"]}
-    (d_id, d_rev) = db.save(data)
-    return {"d_id":d_id}
+    d_key = str(uuid.uuid4())
+    data = {"gps":body["gps"],"init_km":body["init_km"],"del_ids":body["del_ids"],"d_key":d_key}
+    (d_id,_) = db.save(data)
+    return {"d_id":d_id,"d_key":d_key}
 
-@get('/vetoit/retrieve/<d_id>')
-def retrieve(d_id):
+@get('/vetoit/retrieve/<d_id>/<d_key>')
+def retrieve(d_id,d_key):
     if d_id in db:
         record = db[d_id]
-        data = {"gps":record["gps"],"init_km":record["init_km"],"del_ids":record["del_ids"]}
+        if d_key == record["d_key"]:
+            data = {"gps":record["gps"],"init_km":record["init_km"],"del_ids":record["del_ids"]}
+        else:
+            data = {"status":"Error", "status_text": "Provided key invalid"}
     else:
         data = {"status":"Error", "status_text": "Document does not exist"}
     return data
 
-@post('/vetoit/veto/<d_id>')
-def veto(d_id):
+@post('/vetoit/veto/<d_id>/<d_key>')
+def veto(d_id,d_key):
     body = request.json
     if d_id in db:
         record = db[d_id]
-        unique_dels = set(body["del_ids"] + record["del_ids"])
-        record["del_ids"] = unique_dels
-        db[record['id']] = record
-        return {"status":"Success", "status_text": "Document successfully updated"}
+        if d_key == record["d_key"]:
+            unique_dels = set(body["del_ids"] + record["del_ids"])
+            record["del_ids"] = unique_dels
+            db[record['id']] = record
+            return {"status":"Success", "status_text": "Document successfully updated"}
+        else:
+            return {"status":"Error", "status_text": "Provided key invalid"}
     else:
         return {"status":"Error", "status_text": "Document does not exist"}
