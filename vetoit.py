@@ -43,7 +43,7 @@ def veto(d_id,d_key):
         if d_key == record["d_key"]:
             unique_dels = set(body["del_ids"] + record["del_ids"])
             record["del_ids"] = unique_dels
-            db[record['d_id']] = record
+            db[record["_id"]] = record
             return {"status":"Success", "status_text": "Document successfully updated"}
         else:
             return {"status":"Error", "status_text": "Provided key invalid"}
