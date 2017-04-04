@@ -41,7 +41,7 @@ def veto(d_id,d_key):
             db.delete(record)
             return {"status":"Error", "status_text": "Item has expired"}
         if d_key == record["d_key"]:
-            unique_dels = set(body["del_ids"] + record["del_ids"])
+            unique_dels = list(set(body["del_ids"] + record["del_ids"]))
             record["del_ids"] = unique_dels
             db[record["_id"]] = record
             return {"status":"Success", "status_text": "Document successfully updated"}
